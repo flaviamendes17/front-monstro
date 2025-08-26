@@ -20,7 +20,7 @@ export default function Home() {
       </header>
 
       <main className="flex items-center justify-center min-h-[80vh] p-4">
-        <div className="bg-white p-6 rounded-lg shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-sm">
+        <div className="bg-white p-6 rounded-lg shadow-2xl transform rotate-0 hover:rotate-2 transition-transform duration-300 max-w-sm">
           <div className="bg-gray-200 aspect-square relative mb-4 overflow-hidden rounded">
             <Image
               src="/image/flavia.jpg"
@@ -30,8 +30,6 @@ export default function Home() {
               priority
             />
           </div>
-          
-          {/* Information Area */}
           <div className="text-center space-y-2">
             <h2 className="text-xl font-bold text-gray-800">
               Flavia R. A. Mendes
@@ -56,7 +54,7 @@ export default function Home() {
                 />
               </a>
               <a 
-                href="https://linkedin.com/in/flaviamendes" 
+                href="https://www.linkedin.com/in/flaviamendes17" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="transform hover:scale-110 transition-transform duration-200"
@@ -70,7 +68,7 @@ export default function Home() {
                 />
               </a>
               <a 
-                href="https://instagram.com/flaviamendes" 
+                href="https://www.instagram.com/flaviaramendes" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="transform hover:scale-110 transition-transform duration-200"
@@ -83,6 +81,20 @@ export default function Home() {
                   className="hover:opacity-80"
                 />
               </a>
+            </div>
+            <div className="pt-6">
+              <Link href="/intro/page.jsx">
+                <button 
+                  className="px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(122, 75, 212, 0.3), rgba(101, 57, 193, 0.3), rgba(81, 39, 175, 0.3), rgba(60, 21, 156, 0.3), rgba(39, 3, 137, 0.3))',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}
+                >
+                  Conheça mais a API
+                </button>
+              </Link>
             </div>
             <div className="pt-2">
             </div>
