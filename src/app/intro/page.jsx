@@ -75,7 +75,7 @@ export default function Intro() {
         </div>
             <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8">
             <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center">
-            <span className="mr-3 text-2xl"> </span>
+            <span className="mr-3 text-2xl">⚙️</span>
             Atributos da Resposta da API
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
@@ -117,7 +117,7 @@ export default function Intro() {
             </div>
             </div>
         </div>
-        <div className='text-center'>
+        <div className='text-center flex flex-col sm:flex-row gap-4 justify-center'>
             <Link href="/">
             <button className='px-8 py-3 rounded-b-full text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-1g' style={{
                 background: 'linear-gradient(135deg, rgba(122, 75, 212, 0.9), rgba(101, 57, 193, 0.9), rgba(81, 40, 174, 0.9))',
@@ -125,6 +125,15 @@ export default function Intro() {
                 border: '1px solid rgba(255, 255, 255, 0.2)',
             }}
             >Voltar para página inicial.
+            </button>
+            </Link>
+            <Link href="/entidade">
+            <button className='px-8 py-3 rounded-b-full text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-1g' style={{
+                background: 'linear-gradient(135deg, rgba(122, 75, 212, 0.9), rgba(101, 57, 193, 0.9), rgba(81, 40, 174, 0.9))',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+            }}
+            >Explorar Monstros
             </button>
             </Link>
         </div>
