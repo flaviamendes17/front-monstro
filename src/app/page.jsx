@@ -35,8 +35,10 @@ export default function Home() {
               Flavia R. A. Mendes
             </h2>
             <p className="text-gray-600 text-sm">
-              A desenvolvedora oficial do site. Aqui você encontra um mundo de criaturas fantásticas, criadas para a matéria de front-end, 
-              como instrumento de finalização do curso de desenvolvimento de sistemas.
+              2TDS1 - SENAI Valinhos
+            </p>
+            <p className="text-gray-600 text-sm">
+              A tecnologia é a ponte entre o que sonhamos e o que podemos transformar em realidade.'' 
             </p>
             <div className="flex justify-center gap-6 mt-6">
               <a 
@@ -83,7 +85,7 @@ export default function Home() {
               </a>
             </div>
             <div className="pt-6">
-              <Link href="/intro/page.jsx">
+              <Link href="/intro">
                 <button 
                   className="px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
                   style={{
