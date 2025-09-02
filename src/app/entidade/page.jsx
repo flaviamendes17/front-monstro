@@ -10,6 +10,8 @@ export default function Entidades() {
     const [monsters, setMonsters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [monstersPerPage] = useState(8); // 8 monstros por página
 
     useEffect(() => {
         fetchMonsters();
@@ -68,6 +70,71 @@ export default function Entidades() {
             position: "top-center",
             autoClose: 2000,
         });
+    };
+
+    // Cálculos da paginação
+    const indexOfLastMonster = currentPage * monstersPerPage;
+    const indexOfFirstMonster = indexOfLastMonster - monstersPerPage;
+    const currentMonsters = monsters.slice(indexOfFirstMonster, indexOfLastMonster);
+    const totalPages = Math.ceil(monsters.length / monstersPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        // Scroll suave para o topo da galeria
+        document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
+        
+        toast.info(`📄 Página ${pageNumber} de ${totalPages}`, {
+            position: "bottom-center",
+            autoClose: 1500,
+        });
+    };
+
+    const handlePrevious = () => {
+        if (currentPage > 1) {
+            handlePageChange(currentPage - 1);
+        }
+    };
+
+    const handleNext = () => {
+        if (currentPage < totalPages) {
+            handlePageChange(currentPage + 1);
+        }
+    };
+
+    // Função para gerar números das páginas
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        const maxVisiblePages = 5;
+        
+        if (totalPages <= maxVisiblePages) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            if (currentPage <= 3) {
+                for (let i = 1; i <= 4; i++) {
+                    pageNumbers.push(i);
+                }
+                pageNumbers.push('...');
+                pageNumbers.push(totalPages);
+            } else if (currentPage >= totalPages - 2) {
+                pageNumbers.push(1);
+                pageNumbers.push('...');
+                for (let i = totalPages - 3; i <= totalPages; i++) {
+                    pageNumbers.push(i);
+                }
+            } else {
+                pageNumbers.push(1);
+                pageNumbers.push('...');
+                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                    pageNumbers.push(i);
+                }
+                pageNumbers.push('...');
+                pageNumbers.push(totalPages);
+            }
+        }
+        
+        return pageNumbers;
     };
 
     if (loading) {
@@ -130,10 +197,15 @@ export default function Entidades() {
                     <p className="text-white/90 text-lg">
                         {monsters.length} monstros encontrados na galeria.
                     </p>
+                    {totalPages > 1 && (
+                        <p className="text-white/70 text-sm mt-2">
+                            Página {currentPage} de {totalPages} • Mostrando {currentMonsters.length} de {monsters.length} monstros
+                        </p>
+                    )}
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-                    {monsters.map((monster) => (
+                    {currentMonsters.map((monster) => (
                         <div 
                             key={monster.id} 
                             className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -241,6 +313,61 @@ export default function Entidades() {
                         </div>
                     ))}
                 </div>
+
+                {/* Paginação */}
+                {totalPages > 1 && (
+                    <div className="mt-12 flex justify-center">
+                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                            <div className="flex items-center space-x-2">
+                                {/* Botão Anterior */}
+                                <button
+                                    onClick={handlePrevious}
+                                    disabled={currentPage === 1}
+                                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                        currentPage === 1
+                                            ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                                            : 'bg-white/20 text-white hover:bg-white/30'
+                                    }`}
+                                >
+                                    ← Anterior
+                                </button>
+
+                                {/* Números das páginas */}
+                                {getPageNumbers().map((pageNumber, index) => (
+                                    <React.Fragment key={index}>
+                                        {pageNumber === '...' ? (
+                                            <span className="px-3 py-2 text-white/60">...</span>
+                                        ) : (
+                                            <button
+                                                onClick={() => handlePageChange(pageNumber)}
+                                                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                                    currentPage === pageNumber
+                                                        ? 'bg-white text-purple-600 font-bold'
+                                                        : 'bg-white/20 text-white hover:bg-white/30'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+
+                                {/* Botão Próximo */}
+                                <button
+                                    onClick={handleNext}
+                                    disabled={currentPage === totalPages}
+                                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                        currentPage === totalPages
+                                            ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                                            : 'bg-white/20 text-white hover:bg-white/30'
+                                    }`}
+                                >
+                                    Próximo →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {monsters.length === 0 && !loading && (
                     <div className="text-center text-white/80 mt-12">
