@@ -11,7 +11,7 @@ export default function Entidades() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [monstersPerPage] = useState(8); // 8 monstros por página
+    const [monstersPerPage] = useState(8); 
 
     useEffect(() => {
         fetchMonsters();
@@ -72,7 +72,6 @@ export default function Entidades() {
         });
     };
 
-    // Cálculos da paginação
     const indexOfLastMonster = currentPage * monstersPerPage;
     const indexOfFirstMonster = indexOfLastMonster - monstersPerPage;
     const currentMonsters = monsters.slice(indexOfFirstMonster, indexOfLastMonster);
@@ -80,7 +79,6 @@ export default function Entidades() {
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
-        // Scroll suave para o topo da galeria
         document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
         
         toast.info(`📄 Página ${pageNumber} de ${totalPages}`, {
@@ -101,7 +99,6 @@ export default function Entidades() {
         }
     };
 
-    // Função para gerar números das páginas
     const getPageNumbers = () => {
         const pageNumbers = [];
         const maxVisiblePages = 5;
