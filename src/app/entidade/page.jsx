@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Entidades() {
     const [monsters, setMonsters] = useState([]);
@@ -12,10 +14,15 @@ export default function Entidades() {
     useEffect(() => {
         fetchMonsters();
     }, []);
-/*arrumar aparecimento das imagens*/ 
+
     const fetchMonsters = async () => {
         try {
             setLoading(true);
+            toast.info('🔍 Buscando monstros...', {
+                position: "top-right",
+                autoClose: 2000,
+            });
+            
             const response = await axios.get('https://api.sampleapis.com/monstersanctuary/monsters');
             
             const data = response.data;
@@ -25,11 +32,42 @@ export default function Entidades() {
             );
             
             setMonsters(validMonsters);
+            
+            toast.success(`✨ ${validMonsters.length} monstros carregados com sucesso!`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
+            
         } catch (err) {
             setError(err.message);
+            toast.error(`❌ Erro ao carregar monstros: ${err.message}`, {
+                position: "top-right",
+                autoClose: 5000,
+            });
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleImageLoad = (monsterName) => {
+        toast.success(`🖼️ Imagem do ${monsterName} carregada!`, {
+            position: "bottom-left",
+            autoClose: 2000,
+        });
+    };
+
+    const handleImageError = (monsterName) => {
+        toast.warning(`⚠️ Imagem do ${monsterName} não disponível`, {
+            position: "bottom-left",
+            autoClose: 3000,
+        });
+    };
+
+    const handleViewDetails = (monsterName) => {
+        toast.info(`👁️ Visualizando detalhes de ${monsterName}`, {
+            position: "top-center",
+            autoClose: 2000,
+        });
     };
 
     if (loading) {
@@ -41,6 +79,7 @@ export default function Entidades() {
                     <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
                     <p className="text-white text-xl">Carregando monstros...</p>
                 </div>
+                <ToastContainer theme="dark" />
             </div>
         );
     }
@@ -53,12 +92,16 @@ export default function Entidades() {
                 <div className="text-center">
                     <p className="text-red-300 text-xl mb-4">Erro: {error}</p>
                     <button 
-                        onClick={fetchMonsters}
+                        onClick={() => {
+                            setError(null);
+                            fetchMonsters();
+                        }}
                         className="px-6 py-3 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
                     >
                         Tentar Novamente
                     </button>
                 </div>
+                <ToastContainer theme="dark" />
             </div>
         );
     }
@@ -103,14 +146,8 @@ export default function Entidades() {
                                         src={monster.image}
                                         alt={monster.name || 'Monstro'}
                                         className="w-full h-full object-contain p-2"
-                                        onLoad={(e) => {
-                                            console.log('Imagem carregada:', monster.name);
-                                        }}
-                                        onError={(e) => {
-                                            console.log('Erro ao carregar imagem:', monster.name, monster.image);
-                                            e.target.style.display = 'none';
-                                            e.target.nextSibling.style.display = 'flex';
-                                        }}
+                                        onLoad={() => handleImageLoad(monster.name)}
+                                        onError={() => handleImageError(monster.name)}
                                         crossOrigin="anonymous"
                                     />
                                 ) : null}
@@ -193,7 +230,10 @@ export default function Entidades() {
                                     </div>
                                 )}
                                 <Link href={`/entidade/${monster.id}`}>
-                                    <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-semibold">
+                                    <button 
+                                        onClick={() => handleViewDetails(monster.name)}
+                                        className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-200 font-semibold"
+                                    >
                                         Ver Detalhes
                                     </button>
                                 </Link>
@@ -206,7 +246,13 @@ export default function Entidades() {
                     <div className="text-center text-white/80 mt-12">
                         <p className="text-xl">Nenhum monstro encontrado.</p>
                         <button 
-                            onClick={fetchMonsters}
+                            onClick={() => {
+                                toast.info('🔄 Recarregando galeria de monstros...', {
+                                    position: "top-center",
+                                    autoClose: 2000,
+                                });
+                                fetchMonsters();
+                            }}
                             className="mt-4 px-6 py-3 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors"
                         >
                             Recarregar
@@ -218,6 +264,22 @@ export default function Entidades() {
             <footer className='text-center text-white/60 py-6 mt-8'>
                 <p>&copy; 2025 Monster Gallery. Todos os direitos reservados.</p>
             </footer>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                style={{
+                    fontSize: '14px'
+                }}
+            />
         </div>
     );
 }
