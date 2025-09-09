@@ -1,0 +1,57 @@
+.botaoTema {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 50;
+    padding: 12px;
+    border-radius: 50%;
+    border: 1px solid;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .botaoTema:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .botaoTema:active {
+    transform: scale(0.95);
+  }
+  
+  /* Tema Claro */
+  .botaoTema.light {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .botaoTema.light:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Tema Escuro */
+  .botaoTema.dark {
+    background: rgba(55, 65, 81, 0.8);
+    border-color: rgba(249, 250, 251, 0.3);
+}
+
+.botaoTema.dark:hover {
+    background: rgba(55, 65, 81, 0.9);
+    border-color: rgba(249, 250, 251, 0.5);
+}
+
+  /* Imagem do botão */
+.imagemTema {
+    width: 32px;
+    height: 32px;
+    transition: transform 0.3s ease;
+}
+
+.botaoTema:hover .imagemTema {
+    transform: rotate(180deg);
+}
+
+

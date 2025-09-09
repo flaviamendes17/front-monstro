@@ -1,43 +1,59 @@
+'use client';
+import React from 'react';
 import Link from 'next/link';
+import { useTema } from '../contexts/Tema';
+import BotaoTema from '../components/BotaoTema';
 
 export default function NotFound() {
+    const { tema, estiloTema } = useTema();
+
     return (
-        <div className='min-h-screen flex flex-col' style={{
-            background: 'linear-gradient(135deg, #7a4bd4 0%, #6539c1 25%, #5127af 50%, #3c159c 75%, #270389 100%)'
-        }}>
+        <div className='min-h-screen flex flex-col' style={estiloTema}>
+            <BotaoTema />
+
             <div className="flex-1 flex items-center justify-center relative">
                 <div className="container mx-auto px-4 py-8">
                     <div className="text-center">
                         <div className="mb-8 animate-bounce">
-                            <span className="text-9xl md:text-[12rem] filter drop-shadow-lg">
-                                👾
-                            </span>
+                            <span className="text-9xl md:text-[12rem] filter drop-shadow-lg">👾</span>
                         </div>
 
-                        <h1 className="text-6xl md:text-8xl font-bold text-white mb-4 drop-shadow-lg">
+                        <h1 className="text-6xl md:text-8xl font-bold mb-4 drop-shadow-lg" style={{
+                            color: tema === 'dark' ? '#f9fafb' : '#ffffff'
+                        }}>
                             404
                         </h1>
 
-                        <h2 className="text-2xl md:text-4xl font-semibold text-white/90 mb-6">
+                        <h2 className="text-2xl md:text-4xl font-semibold mb-6" style={{
+                            color: tema === 'dark' ? '#e5e7eb' : '#ffffff90'
+                        }}>
                             Monstro Não Encontrado!
                         </h2>
 
-                        <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed" style={{
+                            color: tema === 'dark' ? '#d1d5db' : '#ffffff80'
+                        }}>
                             Parece que este monstro fugiu para outra dimensão! 🌌<br />
                             A página que você procura não existe ou foi movida.
                         </p>
 
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8 mb-8 max-w-md mx-auto border border-white/20">
                             <div className="space-y-4">
-                                <div className="flex items-center justify-center space-x-2 text-white/90">
+                                <div className="flex items-center justify-center space-x-2" style={{
+                                    color: tema === 'dark' ? '#e5e7eb' : '#ffffff90'
+                                }}>
                                     <span className="text-2xl">🔍</span>
                                     <span className="font-medium">Status: Perdido</span>
                                 </div>
-                                <div className="flex items-center justify-center space-x-2 text-white/90">
+                                <div className="flex items-center justify-center space-x-2" style={{
+                                    color: tema === 'dark' ? '#e5e7eb' : '#ffffff90'
+                                }}>
                                     <span className="text-2xl">📍</span>
                                     <span className="font-medium">Local: Dimensão Desconhecida</span>
                                 </div>
-                                <div className="flex items-center justify-center space-x-2 text-white/90">
+                                <div className="flex items-center justify-center space-x-2" style={{
+                                    color: tema === 'dark' ? '#e5e7eb' : '#ffffff90'
+                                }}>
                                     <span className="text-2xl">⚡</span>
                                     <span className="font-medium">Tipo: Erro 404</span>
                                 </div>
@@ -65,23 +81,31 @@ export default function NotFound() {
                         </div>
 
                         <div className="mt-12 text-center">
-                            <p className="text-white/60 text-sm mb-4">💡 Dicas para encontrar o que procura:</p>
+                            <p className="text-sm mb-4" style={{
+                                color: tema === 'dark' ? '#9ca3af' : '#ffffff60'
+                            }}>💡 Dicas para encontrar o que procura:</p>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
                                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                                     <div className="text-2xl mb-2">🏠</div>
-                                    <p className="text-white/70 text-sm">
+                                    <p className="text-sm" style={{
+                                        color: tema === 'dark' ? '#9ca3af' : '#ffffff70'
+                                    }}>
                                         Comece pela página inicial para navegar pelo site
                                     </p>
                                 </div>
                                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                                     <div className="text-2xl mb-2">🔍</div>
-                                    <p className="text-white/70 text-sm">
+                                    <p className="text-sm" style={{
+                                        color: tema === 'dark' ? '#9ca3af' : '#ffffff70'
+                                    }}>
                                         Explore a galeria de monstros para encontrar criaturas incríveis
                                     </p>
                                 </div>
                                 <div className="bg-white/5 rounded-lg p-4 border border-white/10">
                                     <div className="text-2xl mb-2">📚</div>
-                                    <p className="text-white/70 text-sm">
+                                    <p className="text-sm" style={{
+                                        color: tema === 'dark' ? '#9ca3af' : '#ffffff70'
+                                    }}>
                                         Consulte as informações da API para entender melhor o projeto
                                     </p>
                                 </div>
@@ -97,7 +121,9 @@ export default function NotFound() {
             </div>
 
             {/* Footer */}
-            <footer className='text-center text-white/40 py-4 bg-black/20 backdrop-blur-sm border-t border-white/10'>
+            <footer className='text-center py-4 bg-black/20 backdrop-blur-sm border-t border-white/10' style={{
+                color: tema === 'dark' ? '#9ca3af' : '#ffffff40'
+            }}>
                 <p className="text-sm">
                     &copy; 2025 Monster Gallery • Página não encontrada, mas a aventura continua! 🚀
                 </p>

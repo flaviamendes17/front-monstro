@@ -5,8 +5,11 @@ import Link from 'next/link';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTema } from '../../contexts/Tema'; 
+import BotaoTema from '../../components/botaotema'; 
 
 export default function Entidades() {
+    const { tema, estiloTema, estiloCard } = useTema(); 
     const [monsters, setMonsters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -171,9 +174,8 @@ export default function Entidades() {
     }
 
     return (
-        <div className='min-h-screen' style={{
-            background: 'linear-gradient(135deg, #7a4bd4 0%, #6539c1 25%, #5127af 50%, #3c159c 75%, #270389 100%)'
-        }}>
+        <div className="min-h-screen" style={estiloTema}> {/* ✅ Usar estiloTema */}
+            <BotaoTema />
             <header className="bg-white/20 backdrop-blur-sm border-b border-white/30">
                 <div className="container mx-auto px-4 py-6">
                     <div className="flex items-center justify-between">
