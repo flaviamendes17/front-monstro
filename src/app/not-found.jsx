@@ -79,38 +79,6 @@ export default function NotFound() {
                                 </button>
                             </Link>
                         </div>
-
-                        <div className="mt-12 text-center">
-                            <p className="text-sm mb-4" style={{
-                                color: tema === 'dark' ? '#9ca3af' : '#ffffff60'
-                            }}>💡 Dicas para encontrar o que procura:</p>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-                                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                                    <div className="text-2xl mb-2">🏠</div>
-                                    <p className="text-sm" style={{
-                                        color: tema === 'dark' ? '#9ca3af' : '#ffffff70'
-                                    }}>
-                                        Comece pela página inicial para navegar pelo site
-                                    </p>
-                                </div>
-                                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                                    <div className="text-2xl mb-2">🔍</div>
-                                    <p className="text-sm" style={{
-                                        color: tema === 'dark' ? '#9ca3af' : '#ffffff70'
-                                    }}>
-                                        Explore a galeria de monstros para encontrar criaturas incríveis
-                                    </p>
-                                </div>
-                                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                                    <div className="text-2xl mb-2">📚</div>
-                                    <p className="text-sm" style={{
-                                        color: tema === 'dark' ? '#9ca3af' : '#ffffff70'
-                                    }}>
-                                        Consulte as informações da API para entender melhor o projeto
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="absolute top-20 left-10 text-4xl opacity-20 animate-pulse">👻</div>
