@@ -11,14 +11,25 @@ import BotaoTema from '../../components/botaotema';
 export default function Entidades() {
     const { tema, estiloTema, estiloCard } = useTema(); 
     const [monsters, setMonsters] = useState([]);
+    const [filteredMonsters, setFilteredMonsters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [monstersPerPage] = useState(8); 
+    const [monstersPerPage] = useState(8);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchMonsters();
     }, []);
+
+    // Filtrar monstros quando o termo de busca mudar
+    useEffect(() => {
+        const filtered = monsters.filter(monster =>
+            monster.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredMonsters(filtered);
+        setCurrentPage(1); // Reset para primeira página quando pesquisar
+    }, [searchTerm, monsters]);
 
     const fetchMonsters = async () => {
         try {
@@ -32,6 +43,7 @@ export default function Entidades() {
             );
             
             setMonsters(validMonsters);
+            setFilteredMonsters(validMonsters);
             
             toast.success(`✨ ${validMonsters.length} monstros carregados!`, {
                 position: "top-right",
@@ -49,12 +61,19 @@ export default function Entidades() {
         }
     };
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
 
+    const clearSearch = () => {
+        setSearchTerm('');
+    };
 
+    // Usar filteredMonsters ao invés de monsters para paginação
     const indexOfLastMonster = currentPage * monstersPerPage;
     const indexOfFirstMonster = indexOfLastMonster - monstersPerPage;
-    const currentMonsters = monsters.slice(indexOfFirstMonster, indexOfLastMonster);
-    const totalPages = Math.ceil(monsters.length / monstersPerPage);
+    const currentMonsters = filteredMonsters.slice(indexOfFirstMonster, indexOfLastMonster);
+    const totalPages = Math.ceil(filteredMonsters.length / monstersPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -179,162 +198,231 @@ export default function Entidades() {
             </header>
 
             <main className='container mx-auto px-4 py-8'>
+                {/* Campo de Pesquisa */}
+                <div className="mb-8 max-w-md mx-auto">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Pesquisar monstro pelo nome..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="w-full px-4 py-3 pl-12 pr-10 rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2"
+                            style={{
+                                background: tema === 'dark' ? 'rgba(55, 65, 81, 0.8)' : 'rgba(255, 255, 255, 0.9)',
+                                borderColor: tema === 'dark' ? 'rgba(249, 250, 251, 0.3)' : 'rgba(255, 255, 255, 0.3)',
+                                color: tema === 'dark' ? '#f9fafb' : '#1f2937',
+                                focusRingColor: tema === 'dark' ? '#7c3aed' : '#7c3aed'
+                            }}
+                        />
+                        <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                            <svg className="w-5 h-5" style={{
+                                color: tema === 'dark' ? 'rgba(249, 250, 251, 0.6)' : 'rgba(31, 41, 55, 0.6)'
+                            }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        {searchTerm && (
+                            <button
+                                onClick={clearSearch}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 hover:opacity-60 transition-opacity"
+                            >
+                                <svg className="w-5 h-5" style={{
+                                    color: tema === 'dark' ? 'rgba(249, 250, 251, 0.6)' : 'rgba(31, 41, 55, 0.6)'
+                                }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </div>
+
                 <div className="mb-8 text-center">
                     <p className="text-lg" style={{
                         color: tema === 'dark' ? 'rgba(249, 250, 251, 0.9)' : 'rgba(255, 255, 255, 0.9)'
                     }}>
-                        {monsters.length} monstros encontrados na galeria.
+                        {searchTerm ? (
+                            <>
+                                {filteredMonsters.length} resultado{filteredMonsters.length !== 1 ? 's' : ''} encontrado{filteredMonsters.length !== 1 ? 's' : ''} para "{searchTerm}"
+                            </>
+                        ) : (
+                            `${monsters.length} monstros encontrados na galeria.`
+                        )}
                     </p>
                     {totalPages > 1 && (
                         <p className="text-sm mt-2" style={{
                             color: tema === 'dark' ? 'rgba(249, 250, 251, 0.7)' : 'rgba(255, 255, 255, 0.7)'
                         }}>
-                            Página {currentPage} de {totalPages} • Mostrando {currentMonsters.length} de {monsters.length} monstros
+                            Página {currentPage} de {totalPages} • Mostrando {currentMonsters.length} de {filteredMonsters.length} monstros
                         </p>
                     )}
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-                    {currentMonsters.map((monster) => (
-                        <div 
-                            key={monster.id} 
-                            className="rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                            style={estiloCard}
+                {/* Mensagem quando não há resultados da pesquisa */}
+                {searchTerm && filteredMonsters.length === 0 && (
+                    <div className="text-center mt-12">
+                        <div className="text-6xl mb-4">🔍</div>
+                        <p className="text-xl mb-4" style={{
+                            color: tema === 'dark' ? 'rgba(249, 250, 251, 0.8)' : 'rgba(255, 255, 255, 0.8)'
+                        }}>
+                            Nenhum monstro encontrado para "{searchTerm}"
+                        </p>
+                        <button 
+                            onClick={clearSearch}
+                            className="px-6 py-3 rounded-lg transition-colors"
+                            style={{
+                                background: tema === 'dark' ? 'rgba(55, 65, 81, 0.6)' : 'rgba(255, 255, 255, 0.2)',
+                                color: tema === 'dark' ? '#f9fafb' : '#ffffff'
+                            }}
                         >
-                            <div className="relative h-48" style={{
-                                background: tema === 'dark' 
-                                    ? 'linear-gradient(135deg, #4b5563, #6b7280)' 
-                                    : 'linear-gradient(135deg, #e5e7eb, #f3f4f6)'
-                            }}>
-                                {monster.image && 
-                                !monster.image.includes('data:image/gif;base64') && 
-                                monster.image.startsWith('http') ? (
-                                    <img
-                                        src={monster.image}
-                                        alt={monster.name || 'Monstro'}
-                                        className="w-full h-full object-contain p-2"
-                                        crossOrigin="anonymous"
-                                    />
-                                ) : null}
-                                <div 
-                                    className="w-full h-full flex flex-col items-center justify-center"
-                                    style={{ 
-                                        display: (monster.image && 
-                                                !monster.image.includes('data:image/gif;base64') && 
-                                                monster.image.startsWith('http')) ? 'none' : 'flex' 
-                                    }}
-                                >
-                                    <span className="text-6xl mb-2">👾</span>
-                                    <span className="text-xs text-center px-2" style={{
-                                        color: tema === 'dark' ? '#9ca3af' : '#6b7280'
-                                    }}>
-                                        {monster.image && monster.image.includes('data:image/gif;base64') 
-                                            ? 'Imagem placeholder' 
-                                            : 'Imagem não disponível'}
-                                    </span>
-                                </div>
-                                
-                                {monster.elements && monster.elements.length > 0 && (
-                                    <div className="absolute top-2 right-2">
-                                        <span className="px-2 py-1 text-white text-xs rounded-full font-semibold" style={{
-                                            background: tema === 'dark' ? '#4b5563' : '#7c3aed'
-                                        }}>
-                                            {monster.elements[0].type?.replace(' (Element)', '') || 'Elemento'}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="p-4">
-                                <h3 className="text-xl font-bold mb-2 truncate" style={{
-                                    color: tema === 'dark' ? '#f9fafb' : '#1f2937'
+                            Limpar Pesquisa
+                        </button>
+                    </div>
+                )}
+
+                {/* Grid de Monstros */}
+                {currentMonsters.length > 0 && (
+                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+                        {currentMonsters.map((monster) => (
+                            <div 
+                                key={monster.id} 
+                                className="rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                                style={estiloCard}
+                            >
+                                <div className="relative h-48" style={{
+                                    background: tema === 'dark' 
+                                        ? 'linear-gradient(135deg, #4b5563, #6b7280)' 
+                                        : 'linear-gradient(135deg, #e5e7eb, #f3f4f6)'
                                 }}>
-                                    {monster.name || 'Nome não disponível'}
-                                </h3>
-                                
-                                {monster.elements && monster.elements.length > 0 && (
-                                    <div className="mb-2">
-                                        <p className="text-sm mb-1" style={{
-                                            color: tema === 'dark' ? '#d1d5db' : '#6b7280'
-                                        }}>
-                                            <span className="font-semibold">Elementos:</span>
-                                        </p>
-                                        <div className="flex flex-wrap gap-1">
-                                            {monster.elements.slice(0, 3).map((element, index) => (
-                                                <span 
-                                                    key={index}
-                                                    className="px-2 py-1 text-xs rounded"
-                                                    style={{
-                                                        background: tema === 'dark' ? '#4b5563' : '#e5e7eb',
-                                                        color: tema === 'dark' ? '#f9fafb' : '#374151'
-                                                    }}
-                                                >
-                                                    {element.type?.replace(' (Element)', '') || `Elemento ${index + 1}`}
-                                                </span>
-                                            ))}
-                                            {monster.elements.length > 3 && (
-                                                <span className="px-2 py-1 text-xs rounded" style={{
-                                                    background: tema === 'dark' ? '#6b7280' : '#f3f4f6',
-                                                    color: tema === 'dark' ? '#f9fafb' : '#6b7280'
-                                                }}>
-                                                    +{monster.elements.length - 3}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {monster.stats && (
-                                    <div className="mb-3">
-                                        <p className="text-sm mb-1" style={{
-                                            color: tema === 'dark' ? '#d1d5db' : '#6b7280'
-                                        }}>
-                                            <span className="font-semibold">Stats:</span>
-                                        </p>
-                                        <div className="grid grid-cols-2 gap-1 text-xs">
-                                            {Object.entries(monster.stats).slice(0, 4).map(([stat, value]) => (
-                                                <div key={stat} className="flex justify-between">
-                                                    <span className="capitalize" style={{
-                                                        color: tema === 'dark' ? '#d1d5db' : '#6b7280'
-                                                    }}>{stat}:</span>
-                                                    <span className="font-semibold" style={{
-                                                        color: tema === 'dark' ? '#f9fafb' : '#1f2937'
-                                                    }}>{value}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {monster.weakness && monster.weakness.length > 0 && (
-                                    <div className="mb-3">
-                                        <p className="text-sm mb-1" style={{
-                                            color: tema === 'dark' ? '#d1d5db' : '#6b7280'
-                                        }}>
-                                            <span className="font-semibold">Fraqueza:</span>
-                                        </p>
-                                        <span className="px-2 py-1 text-xs rounded" style={{
-                                            background: tema === 'dark' ? '#7f1d1d' : '#fecaca',
-                                            color: tema === 'dark' ? '#fca5a5' : '#991b1b'
-                                        }}>
-                                            {monster.weakness[0].type?.replace(' Weakness', '') || 'Desconhecida'}
-                                        </span>
-                                    </div>
-                                )}
-                                <Link href={`/entidade/${monster.id}`}>
-                                    <button 
-                                        className="w-full px-4 py-2 rounded-lg transition-colors duration-200 font-semibold"
-                                        style={{
-                                            background: tema === 'dark' ? '#4b5563' : '#7c3aed',
-                                            color: '#ffffff'
+                                    {monster.image && 
+                                    !monster.image.includes('data:image/gif;base64') && 
+                                    monster.image.startsWith('http') ? (
+                                        <img
+                                            src={monster.image}
+                                            alt={monster.name || 'Monstro'}
+                                            className="w-full h-full object-contain p-2"
+                                            crossOrigin="anonymous"
+                                        />
+                                    ) : null}
+                                    <div 
+                                        className="w-full h-full flex flex-col items-center justify-center"
+                                        style={{ 
+                                            display: (monster.image && 
+                                                    !monster.image.includes('data:image/gif;base64') && 
+                                                    monster.image.startsWith('http')) ? 'none' : 'flex' 
                                         }}
                                     >
-                                        Ver Detalhes
-                                    </button>
-                                </Link>
+                                        <span className="text-6xl mb-2">👾</span>
+                                        <span className="text-xs text-center px-2" style={{
+                                            color: tema === 'dark' ? '#9ca3af' : '#6b7280'
+                                        }}>
+                                            {monster.image && monster.image.includes('data:image/gif;base64') 
+                                                ? 'Imagem placeholder' 
+                                                : 'Imagem não disponível'}
+                                        </span>
+                                    </div>
+                                    
+                                    {monster.elements && monster.elements.length > 0 && (
+                                        <div className="absolute top-2 right-2">
+                                            <span className="px-2 py-1 text-white text-xs rounded-full font-semibold" style={{
+                                                background: tema === 'dark' ? '#4b5563' : '#7c3aed'
+                                            }}>
+                                                {monster.elements[0].type?.replace(' (Element)', '') || 'Elemento'}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-4">
+                                    <h3 className="text-xl font-bold mb-2 truncate" style={{
+                                        color: tema === 'dark' ? '#f9fafb' : '#1f2937'
+                                    }}>
+                                        {monster.name || 'Nome não disponível'}
+                                    </h3>
+                                    
+                                    {monster.elements && monster.elements.length > 0 && (
+                                        <div className="mb-2">
+                                            <p className="text-sm mb-1" style={{
+                                                color: tema === 'dark' ? '#d1d5db' : '#6b7280'
+                                            }}>
+                                                <span className="font-semibold">Elementos:</span>
+                                            </p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {monster.elements.slice(0, 3).map((element, index) => (
+                                                    <span 
+                                                        key={index}
+                                                        className="px-2 py-1 text-xs rounded"
+                                                        style={{
+                                                            background: tema === 'dark' ? '#4b5563' : '#e5e7eb',
+                                                            color: tema === 'dark' ? '#f9fafb' : '#374151'
+                                                        }}
+                                                    >
+                                                        {element.type?.replace(' (Element)', '') || `Elemento ${index + 1}`}
+                                                    </span>
+                                                ))}
+                                                {monster.elements.length > 3 && (
+                                                    <span className="px-2 py-1 text-xs rounded" style={{
+                                                        background: tema === 'dark' ? '#6b7280' : '#f3f4f6',
+                                                        color: tema === 'dark' ? '#f9fafb' : '#6b7280'
+                                                    }}>
+                                                        +{monster.elements.length - 3}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {monster.stats && (
+                                        <div className="mb-3">
+                                            <p className="text-sm mb-1" style={{
+                                                color: tema === 'dark' ? '#d1d5db' : '#6b7280'
+                                            }}>
+                                                <span className="font-semibold">Stats:</span>
+                                            </p>
+                                            <div className="grid grid-cols-2 gap-1 text-xs">
+                                                {Object.entries(monster.stats).slice(0, 4).map(([stat, value]) => (
+                                                    <div key={stat} className="flex justify-between">
+                                                        <span className="capitalize" style={{
+                                                            color: tema === 'dark' ? '#d1d5db' : '#6b7280'
+                                                        }}>{stat}:</span>
+                                                        <span className="font-semibold" style={{
+                                                            color: tema === 'dark' ? '#f9fafb' : '#1f2937'
+                                                        }}>{value}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {monster.weakness && monster.weakness.length > 0 && (
+                                        <div className="mb-3">
+                                            <p className="text-sm mb-1" style={{
+                                                color: tema === 'dark' ? '#d1d5db' : '#6b7280'
+                                            }}>
+                                                <span className="font-semibold">Fraqueza:</span>
+                                            </p>
+                                            <span className="px-2 py-1 text-xs rounded" style={{
+                                                background: tema === 'dark' ? '#7f1d1d' : '#fecaca',
+                                                color: tema === 'dark' ? '#fca5a5' : '#991b1b'
+                                            }}>
+                                                {monster.weakness[0].type?.replace(' Weakness', '') || 'Desconhecida'}
+                                            </span>
+                                        </div>
+                                    )}
+                                    <Link href={`/entidade/${monster.id}`}>
+                                        <button 
+                                            className="w-full px-4 py-2 rounded-lg transition-colors duration-200 font-semibold"
+                                            style={{
+                                                background: tema === 'dark' ? '#4b5563' : '#7c3aed',
+                                                color: '#ffffff'
+                                            }}
+                                        >
+                                            Ver Detalhes
+                                        </button>
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
 
                 {/* Paginação */}
                 {totalPages > 1 && (
