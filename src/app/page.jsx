@@ -17,16 +17,31 @@ export default function Home() {
         borderColor: tema === 'dark' ? 'rgba(249, 250, 251, 0.3)' : 'rgba(255, 255, 255, 0.3)'
       }}>
         <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-center" style={{
-            color: tema === 'dark' ? '#f9fafb' : '#ffffff'
-          }}>
-            Monster Gallery
-          </h1>
-          <p className="text-center mt-2" style={{
-            color: tema === 'dark' ? 'rgba(249, 250, 251, 0.8)' : 'rgba(255, 255, 255, 0.8)'
-          }}>
-            Aqui você encontra um mundo de criaturas fantásticas.
-          </p>
+          <div className="flex justify-between items-center">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-center" style={{
+                color: tema === 'dark' ? '#f9fafb' : '#ffffff'
+              }}>
+                Monster Gallery
+              </h1>
+              <p className="text-center mt-2" style={{
+                color: tema === 'dark' ? 'rgba(249, 250, 251, 0.8)' : 'rgba(255, 255, 255, 0.8)'
+              }}>
+                Aqui você encontra um mundo de criaturas fantásticas.
+              </p>
+            </div>
+            <Link href="/contato">
+              <button 
+                className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 transform hover:scale-105 hover:shadow-lg ml-4"
+                style={{
+                  ...estiloBotao,
+                  minWidth: '100px'
+                }}
+              >
+                📞 Contato
+              </button>
+            </Link>
+          </div>
         </div>
       </header>
 
